@@ -1,5 +1,6 @@
 import React, { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
+import { TranslateIcon } from '@heroicons/react/outline';
 
 
 function Home({ appState }) {
@@ -18,6 +19,8 @@ function Home({ appState }) {
         button: "Add",
         status: "todo",
         origStatus: "todo",
+        error: false,
+        errorMessage: "",
     });
 
     const handleOpenTask = () => {
@@ -27,6 +30,8 @@ function Home({ appState }) {
             button: "Add",
             status: "todo",
             origStatus: "todo",
+            error: false,
+            errorMessage: "",
         });
         setOpen(true);
     };
@@ -36,19 +41,36 @@ function Home({ appState }) {
         if(task.name || task.name.length > 0){
             if(type == "Add Task"){
                 appState[task.status].push({name: task.name});
+                setOpen(false);
             }
             else{
                 if(task.status != task.origStatus){
-                    appState[task.origStatus].splice(task.index,1);
-                    appState[task.status].push({name: task.name});
+                    if((task.origStatus == "todo" && task.status == "inProgress") || 
+                        (task.origStatus == "inProgress" && (task.status == "finish" || task.status == "todo"))){
+                            appState[task.origStatus].splice(task.index,1);
+                            appState[task.status].push({name: task.name});
+                            setOpen(false);
+                    }
+                    else{
+                        updateTask({
+                            ...task,
+                            error: true,
+                            errorMessage: `You can't change the status from ${task.origStatus} to ${task.status}`,
+                        });
+                    }
                 }
-
-                appState[task.status][task.index].name = task.name;
+                else{
+                    appState[task.origStatus][task.index].name = task.name;
+                    setOpen(false);
+                }
             }
-            setOpen(false);
         }
         else{
-            alert("Task Title must not be blank");
+            updateTask({
+                ...task,
+                error: true,
+                errorMessage: `Task Title must not be blank`,
+            });
         }
     };
 
@@ -57,6 +79,8 @@ function Home({ appState }) {
         updateTask({
             ...task,
             [e.target.name]: e.target.value,
+            error: false,
+            errorMessage: "",
         });
     };
 
@@ -70,6 +94,8 @@ function Home({ appState }) {
             button: "Save",
             status: status,
             origStatus: status,
+            error: false,
+            errorMessage: "",
         });
         
         setOpen(true);
@@ -149,7 +175,11 @@ function Home({ appState }) {
                                                     </div>
                                                 </div>
                                             </div>
+                                            {task.error &&
+                                            <span className="text-red-600">{task.errorMessage}</span>
+                                            }
                                         </div>
+                                        
                                     </div>
                                 </div>
                                 
