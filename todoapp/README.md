@@ -1,3 +1,29 @@
+# Steps to run:
+1. Clone the project
+2. Inside ToDoApp directory, execute command `npm install`
+3. After installing the packages, execute command `npm start`
+
+# Getting Started with FakeStore
+
+1. This project has the following features:
+    - Add Task
+    - Edit Task Name
+    - Edit Task Status
+
+2. Core Packages Used:
+    - TailwindCSS
+
+3. Techniques Used:
+    - React Hooks (State and Effect Hook)
+
+4. Assumptions Made:
+    - Tasks are not saved in database/localstorage
+    - Tasks can not be deleted
+
+5. Future Enhancements:
+    - Adding of delete function
+    - Adding of more Task fields
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
